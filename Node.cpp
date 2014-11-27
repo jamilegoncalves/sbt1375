@@ -38,8 +38,10 @@ void NodeArray::put(Node *n, int i)
 
 void NodeArray::clear()
 {
-    for(int i = 0; i < size; ++i)
+    for(int i = 0; i < size; ++i) {
         nodes[i] = NULL;
+    }
+
     size = 0;
 }
 

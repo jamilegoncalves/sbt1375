@@ -23,11 +23,12 @@ class BreakpointGraph
 {
 private:
     Permutation *p;
+    int n;
     BPGAdjacency *adjacencies;
-    std::deque<BPGAdjacency *> oneCycles;
-    std::deque<BPGAdjacency *> twoCycles;
-    std::deque<BPGAdjacency *> threeCycles;
-    std::deque<BPGAdjacency *> longCycles;
+    std::deque<int> oneCycles;
+    std::deque<int> twoCycles;
+    std::deque<int> threeCycles;
+    std::deque<int> longCycles;
 
 public:
     BreakpointGraph(Permutation *p);
@@ -39,8 +40,7 @@ public:
      * Método que classifica os ciclos do grafo:
      * oneCycles, twoCycles, threeCycles and longCycles
      */
-    void Cycles();
-
+    void cycles();
     
     /**
      * Método que retorna o número de ciclos ímpares no grafo
@@ -62,9 +62,13 @@ public:
 
     void simpleBreakpointGraph();
     
-    //TODO:
-    void toPermutation(Permutation *p);
+    void renumberBreakpointGraph();
+    
+    Permutation *toPermutation();
+    
+    Permutation *simplePermutation();
 
+    void simpleSort();
     friend std::ostream &operator<<(std::ostream &os, BreakpointGraph *g);
 
 };

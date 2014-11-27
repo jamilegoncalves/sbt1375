@@ -36,7 +36,7 @@ private:
     PermutationTree(Node *root);
 
     void build(Permutation *p);
-
+    
     static Node *join(Node *t1, Node *t2);
  
     /**
@@ -48,7 +48,7 @@ private:
     static std::pair<Node *, Node *> split(Node* &root, int m);
 
     static int findGene(Node *root, int gene);
-
+    
     void prettyPrint(std::ostream &os, Node *root, std::string spacer);
 };
 

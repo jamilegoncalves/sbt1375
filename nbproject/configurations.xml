@@ -45,6 +45,9 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <compileType>
+        <ccTool>
+          <commandLine>-O0</commandLine>
+        </ccTool>
       </compileType>
       <item path="BreakpointGraph.cpp" ex="false" tool="1" flavor2="0">
       </item>

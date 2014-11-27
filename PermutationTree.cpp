@@ -38,6 +38,7 @@ PermutationTree::~PermutationTree() {
     deleteSubtree(root);
 }
 
+
 int PermutationTree::getNumElmts() {
     return root->leavesInSubtree;
 }
@@ -124,8 +125,61 @@ void recalculate(Node *t) {
 void PermutationTree::build(Permutation *p)
 {
     int n = p->getNumElmts();
-    NodeArray *U = new NodeArray(n+1),
-              *V = new NodeArray(n+1);
+    Node **V = new Node*[n+1];
+    Node **U = new Node*[n+1];
+
+    for(int i = 1; i <= n; ++i)
+    {
+        Node *leaf = new Node;
+        leaf->gene = p->getElement(i);
+        leaf->left = NULL;
+        leaf->right = NULL;
+        leaf->height = 0;
+        leaf->leavesInSubtree = 1;
+        U[i] = leaf;
+    }
+    //U->print(cerr);
+
+    int k = n;
+
+    while(k>1)
+    {
+        for(int i = 1; i <= k/2; ++i)
+        {
+            Node *v = new Node;
+            v->left = U[2*i-1];
+            v->right = U[2*i];
+            recalculate(v);
+            V[i] = v;
+        }
+
+        if(k%2 == 0)
+        {
+            swap(U, V);
+        }
+        else
+        {
+            Node* v = new Node;
+            v->left = V[k/2];
+            v->right = U[k];
+            recalculate(v);
+            swap(U, V);
+            U[k/2] = v;
+        }
+
+        k = k/2;
+        //U->print(cerr);
+    }
+
+    root = U[1];
+    delete U, V;
+}
+
+/*void PermutationTree::build(Permutation *p)
+{
+    int n = p->getNumElmts();
+    NodeArray *V = new NodeArray(n+1);
+    NodeArray *U = new NodeArray(n+1);
 
     for(int i = 1; i <= n; ++i)
     {
@@ -174,7 +228,7 @@ void PermutationTree::build(Permutation *p)
 
     root = U->get(1);
     delete U, V;
-}
+}*/
 
 PermutationTree *PermutationTree::join(PermutationTree *t1, PermutationTree *t2)
 {

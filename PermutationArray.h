@@ -20,6 +20,12 @@ public:
     int getElement(int i);
     void applyTransposition(int i, int j, int k);
 
+    /**
+     * Gera uma permutação aleatória.
+     * @params elmts os elementos da permutação aleatória
+     * @params n quantidade de elementos
+     */
+    //static void randomPermutation(int *elmts, int n);
 private:
     int *elmts;
     int n;

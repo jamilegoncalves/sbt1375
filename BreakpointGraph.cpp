@@ -12,11 +12,11 @@
 BreakpointGraph::BreakpointGraph(Permutation *p)
 {
     this->p = p;
-    int n = p->getNumElmts();
+    n = p->getNumElmts();
 
     Permutation *inverse = p->getInverse();
 
-    adjacencies = new BPGAdjacency[2*n+2];
+    adjacencies = new BPGAdjacency[4*n+1];
 
     adjacencies[0].vertex = 0;
     adjacencies[0].reality = 1;
@@ -42,6 +42,15 @@ BreakpointGraph::BreakpointGraph(Permutation *p)
         inverse->getElement(n);
 
     delete inverse;
+   /*
+    for(int i = 0; i < 2*n+2; i++)
+    {
+        std::cout<< "Vértice: " << adjacencies[i].vertex <<std::endl;
+        std::cout<< "Realidade: " << adjacencies[i].reality <<std::endl;
+        std::cout<< "Desejo: " << adjacencies[i].desire <<std::endl;
+        std::cout<<"\n";
+    }
+*/
 }
 
 BreakpointGraph::~BreakpointGraph()
@@ -53,10 +62,9 @@ BreakpointGraph::~BreakpointGraph()
  * Método que classifica os ciclos do grafo:
  * oneCycles, twoCycles, threeCycles and longCycles
  */
-void BreakpointGraph::Cycles()
+void BreakpointGraph::cycles()
 {
-    int n = p->getNumElmts();
-    bool *mark = new bool[2*n+2];
+    bool *mark = new bool[2*n+1];
     int length = 0;
     int i=0;
 
@@ -65,47 +73,214 @@ void BreakpointGraph::Cycles()
         mark[i] = false;
     }
 
-    for(i = 0; i < 2*n+1; i++)
+    for(i = 0; i < 2*n+2; i++)
     {
         while(mark[i] == false)
         {
             mark[i] = true;
             mark[adjacencies[i].desire] = true;
+            ++length;
             
             if(mark[adjacencies[adjacencies[i].desire].reality] == false)
             {
                 i = adjacencies[adjacencies[i].desire].reality;
-                ++length;
             }
-/* TODO: descomentar
- *             else if(length == 1)
-                oneCycles.push_back(adjacencies[i]);
+            else if(length == 1)
+            {
+                oneCycles.push_back(i);
+                length = 0;
+                i=0;
+            }
             else if(length == 2)
-                twoCycles.push_back(adjacencies[i]);
+            {
+                twoCycles.push_back(i);
+                length = 0;
+                i=0;
+            }
             else if(length == 3)
-                threeCycles.push_back(adjacencies[i]);
+            {
+                threeCycles.push_back(i);
+                length = 0;
+                i=0;
+            }
             else
-                longCycles.push_back(adjacencies[i]);*/
+            {
+                longCycles.push_back(i);
+                length = 0;
+                i=0;
+            }
         }
     }
+    /*
+    std::cout<<"OneCycles: " << oneCycles.size() <<std::endl;
+    std::cout<<"TwoCycles: " << twoCycles.size() <<std::endl;
+    std::cout<<"ThreeCycles: " << threeCycles.size() <<std::endl;
+    std::cout<<"LongCycles: " << longCycles.size() <<std::endl;
+    */
     delete mark;
+}
+
+Permutation* BreakpointGraph::simplePermutation()
+{
+    cycles();
+    simpleBreakpointGraph();
+    renumberBreakpointGraph();
+    return toPermutation();
 }
 
 /**
  * Método que transforma o grafo em um grafo simples:
  * somente ciclos com comprimento menor que 4
  */
-
 void BreakpointGraph::simpleBreakpointGraph()
 {
+    bool *mark = new bool[4*n+1];
+    int sizeTable = 2*n+1;
     int length = 0;
+    int i=0;
+    int first;
+
+    for(i = 0; i < 4*n+2; i++)
+    {
+        mark[i] = false;
+    }
     
     while(!longCycles.empty())
     {
-        //int i = longCycles.front();
-        //longCycles.pop_front();
+        i = longCycles.front();
+        longCycles.pop_front();
+        first = i;
 
+        while(mark[i] == false)
+        {
+            mark[i] = true;
+            mark[adjacencies[i].reality] = true;
+            ++length;
+            
+            if( length < 3 )
+            {
+                i = adjacencies[adjacencies[i].reality].desire;
+            }    
+            else if(adjacencies[adjacencies[i].reality].desire != first)
+            {
+                // Novas adjacencias:
+                adjacencies[sizeTable+1].vertex = -(n+2);
+                adjacencies[sizeTable+1].reality = i;
+                adjacencies[sizeTable+1].desire = first;
+
+                adjacencies[sizeTable+2].vertex = n+2;
+                adjacencies[sizeTable+2].reality = adjacencies[i].reality;
+                adjacencies[sizeTable+2].desire = adjacencies[first].desire;
+                
+                // Atualização das demais adjacencias:
+                adjacencies[adjacencies[first].desire].desire = sizeTable+2;
+                adjacencies[first].desire = sizeTable+1;
+                adjacencies[adjacencies[i].reality].reality = sizeTable+2;
+                adjacencies[i].reality = sizeTable+1;
+                
+                mark[sizeTable+1] = true;
+                i = sizeTable+2;
+                length = 0;
+                first = i;
+
+                sizeTable = sizeTable+2;
+                ++n;                
+            }
+        }
     }
+/*
+    for(int i = 0; i < 26; i++)
+    {
+        std::cout<< "Vértice: " << adjacencies[i].vertex <<std::endl;
+        std::cout<< "Realidade: " << adjacencies[i].reality <<std::endl;
+        std::cout<< "Desejo: " << adjacencies[i].desire <<std::endl;
+        std::cout<<"\n";
+    }
+*/
+}
+
+void BreakpointGraph::renumberBreakpointGraph()
+{
+    int *posInAdjacencies = new int[2*n+2];
+    int idxzero = n+1;
+    int j = 0;
+    int newNumber = 1;
+    int temp;
+    
+    for(int i = 0; i < 2*n+2; ++i)
+    {
+        posInAdjacencies[idxzero+adjacencies[i].vertex] = i;
+    }
+    
+    // Renumeração:
+    do
+    {
+        temp = adjacencies[adjacencies[j].desire].vertex;
+        adjacencies[adjacencies[j].desire].vertex = -newNumber;
+        j = posInAdjacencies[-temp+idxzero];
+        if(j != 0)
+            adjacencies[j].vertex = newNumber;
+        ++newNumber;
+    }while(j != 0);
+
+    delete posInAdjacencies;
+
+/*    
+    for(int i = 0; i < 26; i++)
+    {
+        std::cout<< "Vértice: " << adjacencies[i].vertex <<std::endl;
+        std::cout<< "Realidade: " << adjacencies[i].reality <<std::endl;
+        std::cout<< "Desejo: " << adjacencies[i].desire <<std::endl;
+        std::cout<<"\n";
+    }
+*/
+}
+
+Permutation *BreakpointGraph::toPermutation()
+{
+    int *posInAdjacencies = new int[2*n+2];
+    int idxzero = n+1;
+    
+    for(int i = 0; i < 2*n+2; ++i)
+    {
+        posInAdjacencies[idxzero+adjacencies[i].vertex] = i;
+    }
+
+    int *newElmts = new int[n];
+    int temp;
+    int i = 0;
+    int j = 0;
+    
+    while(i<n)
+    {
+        temp = adjacencies[adjacencies[j].reality].vertex;
+        j = posInAdjacencies[-temp+idxzero];
+        newElmts[i] = adjacencies[j].vertex;
+        ++i;
+    }
+/*   
+    std::cout<< "SimplePermutation: " <<std::endl;
+    for(int i = 0; i < n; ++i)
+        std::cout<< newElmts[i] <<std::endl;
+
+*/
+    delete posInAdjacencies;
+    Permutation *pA = new PermutationArray(newElmts, n);
+    return pA;
+}
+
+void BreakpointGraph::simpleSort()
+{
+    cycles();
+    while(!twoCycles.empty())
+    {
+        // apply 2-transposition
+    }
+    while(!threeCycles.empty())
+    {
+        
+    }
+    
 }
 
 /**
@@ -114,14 +289,13 @@ void BreakpointGraph::simpleBreakpointGraph()
 
 int BreakpointGraph::oddCycles()
 {
-    int n = p->getNumElmts();
-    bool *mark = new bool[2*n+2];
+    bool *mark = new bool[4*n+1];
 
     int numCycles = 0;
     int numVertex = 0;
     int i=0;
 
-    for(i = 0; i < 2*n+2; i++)
+    for(i = 0; i < 4*n+2; i++)
     {
         mark[i] = false;
     }
