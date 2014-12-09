@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <math.h>
+#include <iostream>
 
 PermutationArray::PermutationArray()
 {
@@ -32,10 +33,9 @@ PermutationArray::~PermutationArray()
 
 Permutation *PermutationArray::getInverse()
 {
-    int *inv = inverse(elmts, n);
     PermutationArray *ret = new PermutationArray();
     ret->n = n;
-    ret->elmts = inv;
+    ret->elmts = inverse(elmts, n);
     return ret;
 }
 

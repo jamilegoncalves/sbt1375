@@ -172,7 +172,8 @@ void PermutationTree::build(Permutation *p)
     }
 
     root = U[1];
-    delete U, V;
+    delete U;
+    delete V;
 }
 
 /*void PermutationTree::build(Permutation *p)

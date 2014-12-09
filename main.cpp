@@ -74,22 +74,25 @@ int main(int argc, char** argv) {
     int elmts[maxN+10];
     int *nperms = new int[maxN+10]();
     int n = 0;
-    
+
     for(counter = 0; counter < maxN/10; ++counter)
     {
-        //n = ((double)rand() / (double)RAND_MAX) * maxN +10;
-        n = maxN;
+        n = ((double)rand() / (double)RAND_MAX) * maxN +10;
+        //n = maxN;
         randomPermutation(elmts, n);
 
         PermutationArray p(elmts, n);
         
         clock_t begin = clock();
-        PermutationTree pt(&p);
-        //BreakpointGraph *g = new BreakpointGraph(&p);
+        //PermutationTree pt(&p);
+        BreakpointGraph *g = new BreakpointGraph(&p);
+        //Permutation *simpleA = g.simplePermutation();
         clock_t end = clock();
-        
+        delete g;
+
         elapsedTime[n] += double(end - begin);
         nperms[n]++;
+        //delete simpleA;
         //std::cout<< "elapsedTime[" << n << "] = " << elapsedTime[n] <<endl;
     }
 

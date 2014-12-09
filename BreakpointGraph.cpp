@@ -11,7 +11,6 @@
 
 BreakpointGraph::BreakpointGraph(Permutation *p)
 {
-    this->p = p;
     n = p->getNumElmts();
 
     Permutation *inverse = p->getInverse();
@@ -64,7 +63,7 @@ BreakpointGraph::~BreakpointGraph()
  */
 void BreakpointGraph::cycles()
 {
-    bool *mark = new bool[2*n+1];
+    bool mark[2*n+1];
     int length = 0;
     int i=0;
 
@@ -117,7 +116,6 @@ void BreakpointGraph::cycles()
     std::cout<<"ThreeCycles: " << threeCycles.size() <<std::endl;
     std::cout<<"LongCycles: " << longCycles.size() <<std::endl;
     */
-    delete mark;
 }
 
 Permutation* BreakpointGraph::simplePermutation()
@@ -134,7 +132,7 @@ Permutation* BreakpointGraph::simplePermutation()
  */
 void BreakpointGraph::simpleBreakpointGraph()
 {
-    bool *mark = new bool[4*n+1];
+    bool mark[4*n+1];
     int sizeTable = 2*n+1;
     int length = 0;
     int i=0;
@@ -201,7 +199,7 @@ void BreakpointGraph::simpleBreakpointGraph()
 
 void BreakpointGraph::renumberBreakpointGraph()
 {
-    int *posInAdjacencies = new int[2*n+2];
+    int posInAdjacencies[2*n+2];
     int idxzero = n+1;
     int j = 0;
     int newNumber = 1;
@@ -223,8 +221,6 @@ void BreakpointGraph::renumberBreakpointGraph()
         ++newNumber;
     }while(j != 0);
 
-    delete posInAdjacencies;
-
 /*    
     for(int i = 0; i < 26; i++)
     {
@@ -238,15 +234,15 @@ void BreakpointGraph::renumberBreakpointGraph()
 
 Permutation *BreakpointGraph::toPermutation()
 {
-    int *posInAdjacencies = new int[2*n+2];
+    int posInAdjacencies[2*n+2];
     int idxzero = n+1;
-    
+
     for(int i = 0; i < 2*n+2; ++i)
     {
         posInAdjacencies[idxzero+adjacencies[i].vertex] = i;
     }
 
-    int *newElmts = new int[n];
+    int newElmts[n];
     int temp;
     int i = 0;
     int j = 0;
@@ -264,7 +260,6 @@ Permutation *BreakpointGraph::toPermutation()
         std::cout<< newElmts[i] <<std::endl;
 
 */
-    delete posInAdjacencies;
     Permutation *pA = new PermutationArray(newElmts, n);
     return pA;
 }
@@ -289,7 +284,7 @@ void BreakpointGraph::simpleSort()
 
 int BreakpointGraph::oddCycles()
 {
-    bool *mark = new bool[4*n+1];
+    bool mark[4*n+1];
 
     int numCycles = 0;
     int numVertex = 0;
@@ -326,7 +321,6 @@ int BreakpointGraph::oddCycles()
             }
         }
     }
-    delete mark;
     return numCycles;
 }
 
@@ -336,7 +330,7 @@ int BreakpointGraph::oddCycles()
 
 int BreakpointGraph::transpositionDistanceLowerBound()
 {
-    int d = ceil( (double)( p->getNumElmts() + 1 - oddCycles() ) / 2 );
+    int d = ceil( (double)( n + 1 - oddCycles() ) / 2 );
 
     return d;
 }
@@ -347,14 +341,14 @@ int BreakpointGraph::transpositionDistanceLowerBound()
 
 int BreakpointGraph::transpositionDistanceUpperBound()
 {
-    int d = ceil( 3.0/4.0 * (double)(p->getNumElmts() + 1 - oddCycles()) );
+    int d = ceil( 3.0/4.0 * (double)(n + 1 - oddCycles()) );
 
     return d;
 }
 
 std::ostream &operator<<(std::ostream &os, BreakpointGraph *g)
 {
-    int n = g->p->getNumElmts();
+    int n = g->n;
 
     for(int i = 0; i < 2*n+2; i++)
     {
