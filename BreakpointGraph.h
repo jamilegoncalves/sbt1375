@@ -22,7 +22,6 @@ typedef struct
 class BreakpointGraph
 {
 private:
-    Permutation *p;
     int n;
     BPGAdjacency *adjacencies;
     std::deque<int> oneCycles;

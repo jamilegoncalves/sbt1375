@@ -5,6 +5,7 @@ class Permutation {
 
 public:
     virtual int getNumElmts() = 0;
+    virtual ~Permutation();
 
     /**
      * Returns the i-th element of the permutation.
