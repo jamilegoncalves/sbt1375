@@ -110,6 +110,7 @@ void BreakpointGraph::cycles()
             }
         }
     }
+    
     /*
     std::cout<<"OneCycles: " << oneCycles.size() <<std::endl;
     std::cout<<"TwoCycles: " << twoCycles.size() <<std::endl;
