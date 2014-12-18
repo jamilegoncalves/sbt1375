@@ -208,7 +208,7 @@ void BreakpointGraph::renumberBreakpointGraph()
     
     for(int i = 0; i < 2*n+2; ++i)
     {
-        posInAdjacencies[idxzero+adjacencies[i].vertex] = i;
+        posInAdjacencies[idxzero+adjacencies[i].vertex] = i; // Problema aqui!!
     }
     
     // Renumeração:
@@ -311,7 +311,7 @@ int BreakpointGraph::oddCycles()
             }
             else if(numVertex%4 != 0)
             {
-                numCycles = numCycles++;
+                ++numCycles;
                 numVertex = 0;
                 i=0;
             }

@@ -46,7 +46,7 @@
       </toolsSet>
       <compileType>
         <ccTool>
-          <commandLine>-O0</commandLine>
+          <commandLine>-O0 -Wall -Wextra</commandLine>
         </ccTool>
       </compileType>
       <item path="BreakpointGraph.cpp" ex="false" tool="1" flavor2="0">

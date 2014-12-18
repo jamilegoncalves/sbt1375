@@ -22,13 +22,13 @@ void randomPermutation(int elmts[], int n)
 int maxN = 1000000;
 int counter = 0;
 
-void imprime_progresso(int sig) {
+void imprime_progresso(int) {
     std::cerr << "Progresso: " << (double)counter / (double)(maxN/10) * 100 << "%"
             << std::endl;
     alarm(10);
 }
 
-int main(int argc, char** argv) {
+int main(int, char**) {
 
     //int elmtsA[] = { 9, 6, 1, 4, 7, 5, 2, 3, 8 };
 
@@ -83,12 +83,16 @@ int main(int argc, char** argv) {
 
         PermutationArray p(elmts, n);
         
+        //BreakpointGraph *g = new BreakpointGraph(&p);
+        
         clock_t begin = clock();
         //PermutationTree pt(&p);
-        BreakpointGraph *g = new BreakpointGraph(&p);
-        //Permutation *simpleA = g.simplePermutation();
+        //BreakpointGraph *g = new BreakpointGraph(&p);
+        Permutation *p2 = p.getInverse();
+        //Permutation *simpleP = g->simplePermutation();
         clock_t end = clock();
-        delete g;
+//        delete g;
+        delete p2;
 
         elapsedTime[n] += double(end - begin);
         nperms[n]++;

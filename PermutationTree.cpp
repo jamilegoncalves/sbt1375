@@ -52,7 +52,9 @@ Permutation *PermutationTree::getInverse() {
     int *inv = inverse(p, n);
     PermutationArray *pa = new PermutationArray(inv , n);
     PermutationTree *ret = new PermutationTree(pa);
-    delete pa, inv, p;
+    delete pa;
+    delete inv;
+    delete p;
     return ret;
 }
 
@@ -69,9 +71,9 @@ bool find(Node *t, int i, deque<Node *> &path) {
         return true;
 
     if (i <= t->left->leavesInSubtree) {
-        find(t->left, i, path);
+        return find(t->left, i, path);
     } else {
-        find(t->right, i - t->left->leavesInSubtree, path);
+        return find(t->right, i - t->left->leavesInSubtree, path);
     }
 }
 
@@ -271,7 +273,7 @@ Node *PermutationTree::join(Node *t1, Node *t2)
             delete t1;
             return t;
         }
-        if(t1->left->height < t1->right->height)
+        else
         {
             Node *tprimeprime = new Node; // tprimeprime = t"
             Node *tprime = new Node; // tprime = t'
@@ -306,7 +308,7 @@ Node *PermutationTree::join(Node *t1, Node *t2)
             delete t2;
             return t;
         }
-        if(t2->left->height > t2->right->height)
+        else
         {
             Node *tprimeprime = new Node; // tprimeprime = t"
             Node *tprime = new Node; // tprime = t'
