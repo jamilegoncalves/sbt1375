@@ -8,6 +8,7 @@
 #include <list>
 #include <limits>
 #include <sys/time.h>
+#include <assert.h>
 
 BreakpointGraph::BreakpointGraph(Permutation *p)
 {
@@ -55,6 +56,14 @@ BreakpointGraph::BreakpointGraph(Permutation *p)
 BreakpointGraph::~BreakpointGraph()
 {
     delete adjacencies;
+}
+
+Permutation* BreakpointGraph::simplePermutation()
+{
+    cycles();
+    simpleBreakpointGraph();
+    renumberBreakpointGraph();
+    return toPermutation();
 }
 
 /**
@@ -119,21 +128,13 @@ void BreakpointGraph::cycles()
     */
 }
 
-Permutation* BreakpointGraph::simplePermutation()
-{
-    cycles();
-    simpleBreakpointGraph();
-    renumberBreakpointGraph();
-    return toPermutation();
-}
-
 /**
  * Método que transforma o grafo em um grafo simples:
  * somente ciclos com comprimento menor que 4
  */
 void BreakpointGraph::simpleBreakpointGraph()
 {
-    bool mark[4*n+1];
+    bool* mark = new bool[4*n+1];
     int sizeTable = 2*n+1;
     int length = 0;
     int i=0;
@@ -187,6 +188,8 @@ void BreakpointGraph::simpleBreakpointGraph()
             }
         }
     }
+    
+    delete mark;
 /*
     for(int i = 0; i < 26; i++)
     {
@@ -200,7 +203,7 @@ void BreakpointGraph::simpleBreakpointGraph()
 
 void BreakpointGraph::renumberBreakpointGraph()
 {
-    int posInAdjacencies[2*n+2];
+    int* posInAdjacencies = new int[2*n+3];
     int idxzero = n+1;
     int j = 0;
     int newNumber = 1;
@@ -208,20 +211,30 @@ void BreakpointGraph::renumberBreakpointGraph()
     
     for(int i = 0; i < 2*n+2; ++i)
     {
+        assert(idxzero+adjacencies[i].vertex < 2*n+3);
+        assert(idxzero+adjacencies[i].vertex >= 0);
         posInAdjacencies[idxzero+adjacencies[i].vertex] = i; // Problema aqui!!
     }
     
     // Renumeração:
     do
     {
+        assert(adjacencies[j].desire >= 0);
+        assert(adjacencies[j].desire < 4*n+1);
         temp = adjacencies[adjacencies[j].desire].vertex;
         adjacencies[adjacencies[j].desire].vertex = -newNumber;
+        assert(-temp + idxzero < 2*n+3);
+        assert(-temp + idxzero >= 0);
         j = posInAdjacencies[-temp+idxzero];
-        if(j != 0)
+        if(j != 0) {
+            assert(j >= 0);
+            assert(j < 4*n+1);
             adjacencies[j].vertex = newNumber;
+        }
         ++newNumber;
     }while(j != 0);
 
+    delete posInAdjacencies;
 /*    
     for(int i = 0; i < 26; i++)
     {
@@ -235,26 +248,46 @@ void BreakpointGraph::renumberBreakpointGraph()
 
 Permutation *BreakpointGraph::toPermutation()
 {
-    int posInAdjacencies[2*n+2];
+    int* posInAdjacencies = new int[2*n+3];
     int idxzero = n+1;
 
     for(int i = 0; i < 2*n+2; ++i)
     {
+        assert(idxzero+adjacencies[i].vertex < 2*n+3);
+#ifndef NDEBUG
+        if (idxzero+adjacencies[i].vertex < 0) {
+            std::cerr << "idxzero: " << idxzero << ", adj[i].vertex: " <<
+                    adjacencies[i].vertex << std::endl;
+            std::cerr << "n: " << n << std::endl;
+        }
+#endif
+        assert(idxzero+adjacencies[i].vertex >= 0);
         posInAdjacencies[idxzero+adjacencies[i].vertex] = i;
     }
 
-    int newElmts[n];
+    int* newElmts = new int[n];
     int temp;
     int i = 0;
     int j = 0;
     
     while(i<n)
     {
+        assert(adjacencies[j].reality >= 0);
+        assert(adjacencies[j].reality < 4*n+1);
+
         temp = adjacencies[adjacencies[j].reality].vertex;
+        
+        assert(-temp + idxzero < 2*n+3);
+        assert(-temp + idxzero >= 0);
         j = posInAdjacencies[-temp+idxzero];
+
+        assert(j < 4*n+1);
+        assert(j >= 0);
         newElmts[i] = adjacencies[j].vertex;
         ++i;
     }
+    
+    delete posInAdjacencies;
 /*   
     std::cout<< "SimplePermutation: " <<std::endl;
     for(int i = 0; i < n; ++i)
@@ -262,6 +295,8 @@ Permutation *BreakpointGraph::toPermutation()
 
 */
     Permutation *pA = new PermutationArray(newElmts, n);
+    
+    delete newElmts;
     return pA;
 }
 
