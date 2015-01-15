@@ -15,3 +15,15 @@ int* Permutation::inverse(int *p, int n)
 
     return inv;
 }
+
+void Permutation::print(std::ostream &os)
+{
+    int n = getNumElmts();
+    
+    for(int i = 1; i <= n; ++i) {
+        os << getElement(i);
+        if (i < n)
+            os << ",";
+    }
+}
+ 

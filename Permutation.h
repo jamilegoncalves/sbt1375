@@ -1,5 +1,6 @@
 #ifndef PERMUTATION_H
 #define	PERMUTATION_H
+#include <iostream>
 
 class Permutation {
 
@@ -16,6 +17,8 @@ public:
     virtual void applyTransposition(int i, int j, int k) = 0;
 
     virtual Permutation *getInverse() = 0;
+
+    virtual void print(std::ostream &os);
 
 protected:
     static int *inverse(int *p, int n);

@@ -11,7 +11,9 @@
 #include <assert.h>
 
 BreakpointGraph::BreakpointGraph(Permutation *p)
-{
+{    
+    debug = p;
+
     n = p->getNumElmts();
 
     Permutation *inverse = p->getInverse();
@@ -58,12 +60,12 @@ BreakpointGraph::~BreakpointGraph()
     delete adjacencies;
 }
 
-Permutation* BreakpointGraph::simplePermutation()
+Permutation* BreakpointGraph::simplePermutation(Permutation *p)
 {
     cycles();
     simpleBreakpointGraph();
     renumberBreakpointGraph();
-    return toPermutation();
+    return toPermutation(p);
 }
 
 /**
@@ -136,7 +138,7 @@ void BreakpointGraph::simpleBreakpointGraph()
 {
     bool* mark = new bool[4*n+1];
     int sizeTable = 2*n+1;
-    int length = 0;
+    int length;
     int i=0;
     int first;
 
@@ -147,6 +149,7 @@ void BreakpointGraph::simpleBreakpointGraph()
     
     while(!longCycles.empty())
     {
+        length = 0;
         i = longCycles.front();
         longCycles.pop_front();
         first = i;
@@ -205,7 +208,6 @@ void BreakpointGraph::renumberBreakpointGraph()
 {
     int* posInAdjacencies = new int[2*n+3];
     int idxzero = n+1;
-    int j = 0;
     int newNumber = 1;
     int temp;
     
@@ -213,8 +215,10 @@ void BreakpointGraph::renumberBreakpointGraph()
     {
         assert(idxzero+adjacencies[i].vertex < 2*n+3);
         assert(idxzero+adjacencies[i].vertex >= 0);
-        posInAdjacencies[idxzero+adjacencies[i].vertex] = i; // Problema aqui!!
+        posInAdjacencies[idxzero+adjacencies[i].vertex] = i;
     }
+    
+    int j = 0;
     
     // Renumeração:
     do
@@ -246,7 +250,7 @@ void BreakpointGraph::renumberBreakpointGraph()
 */
 }
 
-Permutation *BreakpointGraph::toPermutation()
+Permutation *BreakpointGraph::toPermutation(Permutation *p)
 {
     int* posInAdjacencies = new int[2*n+3];
     int idxzero = n+1;
@@ -258,7 +262,11 @@ Permutation *BreakpointGraph::toPermutation()
         if (idxzero+adjacencies[i].vertex < 0) {
             std::cerr << "idxzero: " << idxzero << ", adj[i].vertex: " <<
                     adjacencies[i].vertex << std::endl;
+            std::cerr << "i: " << i << std::endl;
             std::cerr << "n: " << n << std::endl;
+            std::cerr << "p: ";
+            p->print(std::cerr);
+            std::cerr << std::endl;
         }
 #endif
         assert(idxzero+adjacencies[i].vertex >= 0);

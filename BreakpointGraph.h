@@ -28,6 +28,8 @@ private:
     std::deque<int> twoCycles;
     std::deque<int> threeCycles;
     std::deque<int> longCycles;
+    
+    Permutation *debug;
 
 public:
     BreakpointGraph(Permutation *p);
@@ -63,9 +65,9 @@ public:
     
     void renumberBreakpointGraph();
     
-    Permutation *toPermutation();
+    Permutation *toPermutation(Permutation *p);
     
-    Permutation *simplePermutation();
+    Permutation *simplePermutation(Permutation *p);
 
     void simpleSort();
     friend std::ostream &operator<<(std::ostream &os, BreakpointGraph *g);
