@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <math.h>
+#include <string.h>
 #include <iostream>
 
 PermutationArray::PermutationArray()
@@ -20,7 +21,7 @@ PermutationArray::PermutationArray()
 
 PermutationArray::PermutationArray(int elmts[], int n)
 {
-    this->elmts = new int[n];
+    this->elmts = new element_t[n];
     this->n = n;
     for(int i = 0; i<n; ++i)
         this->elmts[i] = elmts[i];
@@ -45,7 +46,7 @@ int PermutationArray::getNumElmts()
 }
 
 
-int PermutationArray::getElement(int i)
+element_t PermutationArray::getElement(int i)
 {
     if (i==0)
         return 0;
@@ -55,7 +56,13 @@ int PermutationArray::getElement(int i)
         return elmts[i-1];
 }
 
-// TODO: implementar
 void PermutationArray::applyTransposition(int i, int j, int k) {
-
+    size_t leftBlockSize = j-i;
+    size_t rightBlockSize = k-j;
+    size_t tmpSize = leftBlockSize + rightBlockSize;
+    element_t *tmp = new element_t[tmpSize];
+    memcpy(tmp, &elmts[j-1], rightBlockSize*sizeof(element_t));
+    memcpy(tmp+rightBlockSize, &elmts[i-1], leftBlockSize*sizeof(element_t));
+    memcpy(&elmts[i-1], tmp, tmpSize*sizeof(element_t));
+    delete tmp;
 }

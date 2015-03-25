@@ -8,26 +8,22 @@
 #include <iostream>
 #include <deque>
 #include "Permutation.h"
+#include "AdjacencyList.h"
+#include "Algorithms.h"
 
 #ifndef _BREAKPOINTGRAPH_H
 #define	_BREAKPOINTGRAPH_H
-
-typedef struct
-{
-    int vertex;
-    int reality;
-    int desire;
-} BPGAdjacency;
 
 class BreakpointGraph
 {
 private:
     int n;
-    BPGAdjacency *adjacencies;
-    std::deque<int> oneCycles;
-    std::deque<int> twoCycles;
-    std::deque<int> threeCycles;
-    std::deque<int> longCycles;
+    int sizeTable;
+    BPG::AdjacencyList *adjlist;
+    std::deque<BPG::Adjacency *> oneCycles;
+    std::deque<BPG::Adjacency *> twoCycles;
+    std::deque<BPG::Adjacency *> threeCycles;
+    std::deque<BPG::Adjacency *> longCycles;
     
     Permutation *debug;
 
@@ -63,14 +59,15 @@ public:
 
     void simpleBreakpointGraph();
     
-    void renumberBreakpointGraph();
+    void renumber();
     
-    Permutation *toPermutation(Permutation *p);
+    Permutation *toPermutation();
     
-    Permutation *simplePermutation(Permutation *p);
+    Permutation *simplePermutation();
 
-    void simpleSort();
     friend std::ostream &operator<<(std::ostream &os, BreakpointGraph *g);
+
+    friend int Algorithms::simpleSort(PermutationTree *, BreakpointGraph *);
 
 };
 

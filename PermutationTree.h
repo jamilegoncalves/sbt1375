@@ -28,7 +28,7 @@ public:
     int query(int i, int j);
 
     int getNumElmts();
-    int getElement(int i);
+    element_t getElement(int i);
     
     std::ostream &prettyPrint(std::ostream &os);
 private:

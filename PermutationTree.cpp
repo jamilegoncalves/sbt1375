@@ -77,7 +77,7 @@ bool find(Node *t, int i, deque<Node *> &path) {
     }
 }
 
-int PermutationTree::getElement(int i) {
+element_t PermutationTree::getElement(int i) {
     if (i > getNumElmts()) {
         return getNumElmts()+1;
     } else if (i <= 0) {

@@ -17,7 +17,7 @@ public:
 
     Permutation *getInverse();
     int getNumElmts();
-    int getElement(int i);
+    element_t getElement(int i);
     void applyTransposition(int i, int j, int k);
 
 
@@ -29,7 +29,7 @@ public:
      */
     //static void randomPermutation(int *elmts, int n);
 private:
-    int *elmts;
+    element_t *elmts;
     int n;
 };
 

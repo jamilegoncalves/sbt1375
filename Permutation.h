@@ -2,6 +2,8 @@
 #define	PERMUTATION_H
 #include <iostream>
 
+typedef int element_t;
+
 class Permutation {
 
 public:
@@ -11,8 +13,9 @@ public:
     /**
      * Returns the i-th element of the permutation.
      * The index i starts in 1. If i == 0, returns
+     * 0.
      */
-    virtual int getElement(int i) = 0;
+    virtual element_t getElement(int i) = 0;
 
     virtual void applyTransposition(int i, int j, int k) = 0;
 
