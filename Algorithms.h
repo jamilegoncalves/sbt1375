@@ -14,8 +14,11 @@ class BreakpointGraph;
 
 namespace Algorithms {
     int simpleSort(Permutation *p);
-    
     int simpleSort(PermutationTree *p, BreakpointGraph *g);
+    bool confirmCycle(Adjacency *cycle, int length);
+    bool isOriented(Adjacency *cycle);
+    
+    void sort3ints(int &i, int &j, int &k);
 };
 
 #endif	/* ALGORITHMS_H */

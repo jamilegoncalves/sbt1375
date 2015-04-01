@@ -6,6 +6,7 @@ typedef struct Node {
     int gene;
     struct Node *left;
     struct Node *right;
+    struct Node *parent;
     int height;
     int leavesInSubtree;
 } Node;

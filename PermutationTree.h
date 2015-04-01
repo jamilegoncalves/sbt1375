@@ -8,6 +8,7 @@ class PermutationTree : public Permutation {
 
 private:
     Node *root;
+    Node **geneToLeaf;
 
 public:
     PermutationTree(Permutation *p);
@@ -28,8 +29,13 @@ public:
     int query(int i, int j);
 
     int getNumElmts();
+    
+    /** Dado i, retorna pi_i em tempo O(log n) */
     element_t getElement(int i);
     
+    /** Dado pi_i, retorna i em tempo O(log n) */
+    int indexOf(element_t element);
+
     std::ostream &prettyPrint(std::ostream &os);
 private:
     PermutationTree();

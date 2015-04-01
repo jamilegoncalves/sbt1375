@@ -90,6 +90,20 @@ element_t PermutationTree::getElement(int i) {
     }
 }
 
+int PermutationTree::indexOf(element_t element) {
+    Node *leaf = geneToLeaf[element];
+    int idx = 1;
+    Node *curr = leaf;
+    while (curr->parent != NULL) {
+        Node *parent = curr->parent;
+        if (curr == parent->right && parent->left != NULL) {
+            idx = idx + parent->left->leavesInSubtree;
+        }
+        curr = curr->parent;
+    }
+    return idx;
+}
+
 int ceilLog2(int n)
 {
     if (n <= 0)
@@ -122,6 +136,8 @@ void recalculate(Node *t) {
     t->gene = max(t->left->gene, t->right->gene);
     t->leavesInSubtree = t->left->leavesInSubtree +
                          t->right->leavesInSubtree;
+    t->left->parent = t;
+    t->right->parent = t;
 }
 
 void PermutationTree::build(Permutation *p)
@@ -130,15 +146,19 @@ void PermutationTree::build(Permutation *p)
     Node **V = new Node*[n+1];
     Node **U = new Node*[n+1];
 
+    geneToLeaf = new Node*[n+1];
+ 
     for(int i = 1; i <= n; ++i)
     {
         Node *leaf = new Node;
+        leaf->parent = NULL;
         leaf->gene = p->getElement(i);
         leaf->left = NULL;
         leaf->right = NULL;
         leaf->height = 0;
         leaf->leavesInSubtree = 1;
         U[i] = leaf;
+        geneToLeaf[leaf->gene] = leaf;
     }
     //U->print(cerr);
 
@@ -149,6 +169,7 @@ void PermutationTree::build(Permutation *p)
         for(int i = 1; i <= k/2; ++i)
         {
             Node *v = new Node;
+            v->parent = NULL;
             v->left = U[2*i-1];
             v->right = U[2*i];
             recalculate(v);
@@ -162,6 +183,7 @@ void PermutationTree::build(Permutation *p)
         else
         {
             Node* v = new Node;
+            v->parent = NULL;
             v->left = V[k/2];
             v->right = U[k];
             recalculate(v);
@@ -177,61 +199,6 @@ void PermutationTree::build(Permutation *p)
     delete U;
     delete V;
 }
-
-/*void PermutationTree::build(Permutation *p)
-{
-    int n = p->getNumElmts();
-    NodeArray *V = new NodeArray(n+1);
-    NodeArray *U = new NodeArray(n+1);
-
-    for(int i = 1; i <= n; ++i)
-    {
-        Node *leaf = new Node;
-        leaf->gene = p->getElement(i);
-        leaf->left = NULL;
-        leaf->right = NULL;
-        leaf->height = 0;
-        leaf->leavesInSubtree = 1;
-        U->put(leaf,i);
-    }
-    //U->print(cerr);
-
-    int k = n;
-
-    while(k>1)
-    {
-        for(int i = 1; i <= k/2; ++i)
-        {
-            Node *v = new Node;
-            v->left = U->get(2*i-1);
-            v->right = U->get(2*i);
-            recalculate(v);
-            V->put(v,i);
-        }
-
-        if(k%2 == 0)
-        {
-            swap(U, V);
-            V->clear();
-        }
-        else
-        {
-            Node* v = new Node;
-            v->left = V->get(k/2);
-            v->right = U->get(k);
-            recalculate(v);
-            swap(U, V);
-            U->put(v, k/2);
-            V->clear();
-        }
-
-        k = k/2;
-        //U->print(cerr);
-    }
-
-    root = U->get(1);
-    delete U, V;
-}*/
 
 PermutationTree *PermutationTree::join(PermutationTree *t1, PermutationTree *t2)
 {
@@ -253,6 +220,8 @@ Node *PermutationTree::join(Node *t1, Node *t2)
     if( abs(t1->height - t2->height) <= 1 )
     {
         Node *t = new Node;
+        t->parent = NULL;
+
         t->left = t1;
         t->right = t2;
         recalculate(t);
@@ -263,7 +232,10 @@ Node *PermutationTree::join(Node *t1, Node *t2)
         if(t1->left->height >= t1->right->height)
         {
             Node *tprime = new Node; // tprime = t'
+            tprime->parent = NULL;
             Node *t = new Node;
+            t->parent = NULL;
+
             tprime->left = t1->right;
             tprime->right = t2;
             recalculate(tprime);
@@ -276,8 +248,11 @@ Node *PermutationTree::join(Node *t1, Node *t2)
         else
         {
             Node *tprimeprime = new Node; // tprimeprime = t"
+            tprimeprime->parent = NULL;
             Node *tprime = new Node; // tprime = t'
+            tprime->parent = NULL;
             Node *t = new Node;
+            t->parent = NULL;
 
             tprime->left = t1->left;
             tprime->right = t1->right->left;
@@ -298,7 +273,10 @@ Node *PermutationTree::join(Node *t1, Node *t2)
         if(t2->left->height <= t2->right->height)
         {
             Node *tprime = new Node; // tprime = t'
+            tprime->parent = NULL;
             Node *t = new Node;
+            t->parent = NULL;
+
             tprime->left = t1;
             tprime->right = t2->left;
             recalculate(tprime);
@@ -311,8 +289,11 @@ Node *PermutationTree::join(Node *t1, Node *t2)
         else
         {
             Node *tprimeprime = new Node; // tprimeprime = t"
+            tprimeprime->parent = NULL;
             Node *tprime = new Node; // tprime = t'
+            tprime->parent = NULL;
             Node *t = new Node;
+            t->parent = NULL;
 
             tprime->left = t1;
             tprime->right = t2->left->left;
@@ -378,6 +359,12 @@ PermutationTree::split(Node* &root, int m)
         delete (*_node);
     }
 
+    if (tl != NULL) {
+        tl->parent = NULL;
+    }
+    if (tr != NULL) {
+        tr->parent = NULL;
+    }
     pair<Node *, Node*> ret(tl,tr);
     root = NULL;
     return ret;
