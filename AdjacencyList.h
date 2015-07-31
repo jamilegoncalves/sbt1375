@@ -27,6 +27,7 @@ namespace BPG
         ~AdjacencyList();
         void setN(int n);
         Adjacency &operator[](int vertex);
+        void print(std::ostream &os);
     };
 
     class AdjacencyListIndexError : public std::exception

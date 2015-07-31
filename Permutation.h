@@ -13,7 +13,7 @@ public:
     /**
      * Returns the i-th element of the permutation.
      * The index i starts in 1. If i == 0, returns
-     * 0.
+     * 0. If i == n+1, returns n+1.
      */
     virtual element_t getElement(int i) = 0;
 

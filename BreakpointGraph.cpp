@@ -66,6 +66,16 @@ Permutation* BreakpointGraph::simplePermutation()
     renumber();
     return toPermutation();
 }
+//BPG::Adjacency &BreakpointGraph::followRealityEdge(BPG::Adjacency &adj)
+BPG::Adjacency &BreakpointGraph::followRealityEdge(BPG::Adjacency &adj)
+{
+    return (*adjlist)[adj.reality];
+}
+
+BPG::Adjacency &BreakpointGraph::followDesireEdge(BPG::Adjacency &adj)
+{
+    return (*adjlist)[adj.desire];
+}
 
 /**
  * Método que classifica os ciclos do grafo:

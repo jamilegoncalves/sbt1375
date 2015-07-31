@@ -78,8 +78,8 @@ bool find(Node *t, int i, deque<Node *> &path) {
 }
 
 element_t PermutationTree::getElement(int i) {
-    if (i > getNumElmts()) {
-        return getNumElmts()+1;
+    if (i > getNumElmts()) { // if i >= n+1
+        return getNumElmts()+1; // returns n+1
     } else if (i <= 0) {
         return 0;
     } else {
@@ -91,9 +91,14 @@ element_t PermutationTree::getElement(int i) {
 }
 
 int PermutationTree::indexOf(element_t element) {
+    int n = getNumElmts();
     Node *leaf = geneToLeaf[element];
     int idx = 1;
     Node *curr = leaf;
+    if(element == n+1)
+        return element;
+    if(element == 0)
+        return 0;
     while (curr->parent != NULL) {
         Node *parent = curr->parent;
         if (curr == parent->right && parent->left != NULL) {
@@ -326,14 +331,37 @@ Node *PermutationTree::join(Node *t1, Node *t2)
 pair<Node *, Node *>
 PermutationTree::split(Node* &root, int m)
 {
+    int n = root->leavesInSubtree;
+
+    if (m == 0) {
+        Node *tr = root;
+        root = NULL;
+        pair<Node *, Node*> ret(NULL, tr);
+        return ret;
+    }
+    else if (m == n+1)
+    {
+        Node *tl = root;
+        root = NULL;
+        pair<Node *, Node*> ret(tl, NULL);
+        return ret;        
+    }
+
     deque<Node *> path;
     find(root, m, path);
-
+/*    
+    while(!path.empty())
+    {
+        std::cout << "path: " << path.front()->gene <<std::endl;
+        path.pop_front();
+    }
+*/
+    
     Node *tr = path.front(); // tr <- v0
     Node *tl = NULL;
 
     path.pop_front(); // Removes v0 element
-
+    
     Node *lastNode = tr;
 
     deque<Node *>::iterator _node;
@@ -423,7 +451,7 @@ void PermutationTree::applyTransposition(int i, int j, int k)
      */
     std::pair<Node*,Node*> trees = split(root, i);
     t1 = trees.first;
-
+    
     /*
      * trees2.first = [ai, ..., aj-1]
      * trees2.second = [aj, ..., an]

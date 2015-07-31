@@ -134,6 +134,28 @@ void AdjacencyList::setN(int n) {
     this->n = n;
 }
 
+void AdjacencyList::print(ostream& os) {
+    os << "vertex" << "\t" << 0;
+    for (int i=1; i<= n; ++i) {
+        os << "\t" << -i << "\t" << i;
+    }
+    os << "\t" << -(n+1) << std::endl;
+
+    os << "reality" << "\t" << this->operator[](0).reality;
+    for (int i=1; i<= n; ++i) {
+        os << "\t" << this->operator[](-i).reality << "\t"
+                << this->operator[](i).reality;
+    }
+    os << "\t" << -this->operator[](-(n+1)).reality << std::endl;
+
+    os << "desire" << "\t" << this->operator[](0).desire;
+    for (int i=1; i<= n; ++i) {
+        os << "\t" << this->operator[](-i).desire << "\t" 
+                << this->operator[](i).desire;
+    }
+    os << "\t" << -this->operator[](-(n+1)).desire << std::endl;
+}
+
 Adjacency &AdjacencyList::operator[](int vertex)
 {
     assert(vertex >= -(n+1));

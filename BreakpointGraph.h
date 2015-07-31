@@ -32,6 +32,8 @@ public:
     ~BreakpointGraph();
 
 public:
+    BPG::Adjacency &followRealityEdge(BPG::Adjacency &adj);
+    BPG::Adjacency &followDesireEdge(BPG::Adjacency &adj);
 
     /**
      * Método que classifica os ciclos do grafo:

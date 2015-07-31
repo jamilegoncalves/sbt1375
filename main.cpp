@@ -4,37 +4,40 @@
 #include "PermutationArray.h"
 #include "PermutationTree.h"
 #include "BreakpointGraph.h"
+#include "Algorithms.h"
 #include <signal.h>
 #include <unistd.h>
 #include <stdio.h>
 
 using namespace std;
+using namespace Algorithms;
 
-/*
 int main(int, char**) {
 
-//    int elmts[] = {10, 6, 4, 5, 2, 3, 8, 7, 9, 12, 1, 11};
+    int elmts[] = {10, 6, 4, 5, 2, 3, 8, 7, 9, 12, 1, 11};
 
-    int elmts[] = {9, 6, 1, 4, 7, 5, 2, 3, 8};
+    //int elmts[] = {9, 6, 1, 4, 7, 5, 2, 3, 8};
   
     int n = sizeof(elmts)/sizeof(int);
     
     PermutationArray p(elmts, n);
     
-    BreakpointGraph *g = new BreakpointGraph(&p);
+//    BreakpointGraph *g = new BreakpointGraph(&p);
     
-    Permutation*simpleP = g->simplePermutation();
+//    Permutation*simpleP = g->simplePermutation();
         
-    PermutationTree *tree = new PermutationTree(simpleP);
+//    PermutationTree *tree = new PermutationTree(simpleP);
     
-    std::cout<<"Build tree:"<<std::endl;
-    tree->prettyPrint(std::cerr);
+//    std::cout<<"Build tree:"<<std::endl;
+//    tree->prettyPrint(std::cerr);
+    
+    std::cout<< "Distance: " << Algorithms::simpleSort(&p) <<std::endl;
     
     return 0;
 }
-*/
 
-//#ifdef CODIGO_ANTIGO
+
+#ifdef CODIGO_ANTIGO
 
 void randomPermutation(int elmts[], int n)
 {
@@ -159,4 +162,4 @@ int main(int, char**) {
     return 0;
 }
 
-//#endif
+#endif
